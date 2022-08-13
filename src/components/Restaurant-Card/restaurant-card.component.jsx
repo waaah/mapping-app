@@ -6,7 +6,7 @@ import CardContent from "@mui/material/CardContent";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useDispatch, useSelector } from "react-redux";
-import { resetLocationState } from "../../store/selected-location/selected-location.slices";
+import { resetState } from "../../store/selected-location/selected-location.slices";
 
 const bull = (
   <Box
@@ -41,7 +41,7 @@ export const RestaurantCard = () => {
         </Typography>
       </CardContent>
       <CardActions>
-        <Button size="small" onClick={() => dispatch(resetLocationState())}>
+        <Button size="small" onClick={() => dispatch(resetState())}>
           Close
         </Button>
       </CardActions>

@@ -1,29 +1,33 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const initialState = {
+  destination: null,
+  origin: null,
+  restaurant: null,
+};
+
 const selectedLocationSlice = createSlice({
   name: "selectedLocation",
-  initialState: {
-    destination: null,
-    origin: null,
-    restaurant: null,
-  },
+  initialState,
   reducers: {
-    setLocationState(state, action) {
-      const { origin, destination, restaurant } = action.payload;
-      state.origin = origin;
+    setRestaurantState(state, action) {
+      const { restaurant } = action.payload;
       state.restaurant = restaurant;
+      return state;
+    },
+    setLocationState(state, action) {
+      const { origin, destination } = action.payload;
+      state.origin = origin;
       state.destination = destination;
       return state;
     },
-    resetLocationState(state) {
-      state.origin = null;
-      state.destination = null;
-      state.restaurant = null;
+    resetState(state) {
+      state = initialState;
       return state;
     },
   },
 });
 
-export const { setLocationState, resetLocationState } =
+export const { setLocationState, resetState, setRestaurantState } =
   selectedLocationSlice.actions;
 export default selectedLocationSlice;
