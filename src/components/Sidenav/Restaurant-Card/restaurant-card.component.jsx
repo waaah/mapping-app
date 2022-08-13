@@ -1,12 +1,13 @@
 import * as React from "react";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
 import Divider from "@mui/material/Divider";
 import StarRatings from "react-star-ratings";
 import "./restaurant-card.component.css";
+import { setLocationState } from "../../../store/location/location.slices";
+import { useDispatch } from "react-redux/es/exports";
+import { getLocation } from "../../../services/location";
 
 export const RestaurantCard = (props) => {
+  const dispatch = useDispatch();
   const restaurant = props.restaurant;
   const secondaryText = (
     <div className="secondary-block">
@@ -24,9 +25,15 @@ export const RestaurantCard = (props) => {
       </div>
     </div>
   );
-  console.log(restaurant);
+
+  const onClickLocationCard = async () => {
+    const origin = await getLocation();
+    const destination = restaurant.geometry.location;
+    dispatch(setLocationState({ origin, destination }));
+  };
+
   return (
-    <div className="card-container">
+    <div className="card-container" onClick={onClickLocationCard}>
       <div className="restaurant-info">
         <h2 className="restaurant-name">{restaurant.name}</h2>
         {secondaryText}
@@ -34,5 +41,4 @@ export const RestaurantCard = (props) => {
       <Divider />
     </div>
   );
-  // return <div>{restaurant.name}</div>;
 };

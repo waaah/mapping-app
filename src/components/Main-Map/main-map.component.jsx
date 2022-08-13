@@ -1,14 +1,16 @@
-import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
-import { useEffect } from "react";
+/*global google*/
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getRestaurants } from "../../services/places";
-import { setRestaurants } from "../../store/restaurant.slice";
-
+import { setRestaurants } from "../../store/restaurant/restaurant.slice";
+import { Map } from "./Map/map.component";
 import "./main-map.styles.css";
 
 export const MainMap = () => {
   const dispatch = useDispatch();
   const restaurants = useSelector((state) => state.restaurants);
+  const { origin, destination } = useSelector((state) => state.location);
+  const [directions, setDirections] = useState();
 
   useEffect(() => {
     const getRestaurantData = async () => {
@@ -18,26 +20,30 @@ export const MainMap = () => {
     getRestaurantData();
   }, []);
 
-  const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyD-eQAdA2DAAPRVDQKOCKT1KpgeKtJnDVM",
-  });
+  useEffect(() => {
+    // if there are any changes in the origin and destination
+    const getDirections = async () => {
+      if (!origin && !destination) return setDirections(null);
+      const directionsService = new window.google.maps.DirectionsService();
+      const directions = await directionsService.route({
+        origin,
+        destination,
+        travelMode: window.google.maps.TravelMode.DRIVING,
+      });
 
-  if (!isLoaded) return <div>Loading...</div>;
-  return getMap({ lat: 10.336536, lng: 123.883072, markerData: restaurants });
-};
+      setDirections(directions);
+    };
+    getDirections();
+  }, [origin, destination]);
 
-const getMap = (config) => {
-  const markers = config.markerData.map((data, i) => {
-    const { lat, lng } = data.geometry.location;
-    return <Marker key={i} position={{ lat, lng }}></Marker>;
-  });
   return (
-    <GoogleMap
-      zoom={15}
-      center={{ lat: config.lat, lng: config.lng }}
-      mapContainerClassName="map-container"
-    >
-      {markers.length > 0 && markers}
-    </GoogleMap>
+    <Map
+      config={{
+        lat: 10.336536,
+        lng: 123.883072,
+        markerData: restaurants,
+        directions,
+      }}
+    />
   );
 };
