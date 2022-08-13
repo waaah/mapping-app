@@ -1,16 +1,19 @@
 import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { getRestaurants } from "../../services/places";
+import { setRestaurants } from "../../store/restaurant.slice";
+
 import "./main-map.styles.css";
-import { MarkerGroup } from "../Marker-Group/marker-group.component";
 
 export const MainMap = () => {
-  const [restaurants, setRestaurants] = useState();
+  const dispatch = useDispatch();
+  const restaurants = useSelector((state) => state.restaurants);
 
   useEffect(() => {
     const getRestaurantData = async () => {
       const restaurants = await getRestaurants();
-      setRestaurants(restaurants);
+      dispatch(setRestaurants(restaurants));
     };
     getRestaurantData();
   }, []);
@@ -30,7 +33,7 @@ const getMap = (config) => {
   });
   return (
     <GoogleMap
-      zoom={10}
+      zoom={15}
       center={{ lat: config.lat, lng: config.lng }}
       mapContainerClassName="map-container"
     >

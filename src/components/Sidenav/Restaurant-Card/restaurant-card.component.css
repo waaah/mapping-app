@@ -1,0 +1,15 @@
+.card-container {
+  cursor: pointer;
+}
+
+.secondary-block {
+  display: flex;
+  line-height: 1.5em;
+  flex-direction: column;
+}
+.restaurant-name {
+  margin: 5px auto;
+}
+.restaurant-info {
+  padding: 20px;
+}
