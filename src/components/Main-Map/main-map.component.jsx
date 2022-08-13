@@ -9,7 +9,9 @@ import "./main-map.styles.css";
 export const MainMap = () => {
   const dispatch = useDispatch();
   const restaurants = useSelector((state) => state.restaurants);
-  const { origin, destination } = useSelector((state) => state.location);
+  const { origin, destination } = useSelector(
+    (state) => state.selectedLocation
+  );
   const [directions, setDirections] = useState();
 
   useEffect(() => {
@@ -24,6 +26,7 @@ export const MainMap = () => {
     // if there are any changes in the origin and destination
     const getDirections = async () => {
       if (!origin && !destination) return setDirections(null);
+
       const directionsService = new window.google.maps.DirectionsService();
       const directions = await directionsService.route({
         origin,
