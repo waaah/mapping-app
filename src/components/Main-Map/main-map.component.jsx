@@ -1,26 +1,20 @@
 /*global google*/
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getRestaurants } from "../../services/places";
-import { setRestaurants } from "../../store/restaurant/restaurant.slice";
 import { Map } from "./Map/map.component";
+import { getRestaurantsByFilter } from "../../store/restaurant/restaurant.slice";
 import "./main-map.styles.css";
 
 export const MainMap = () => {
   const dispatch = useDispatch();
-  const restaurants = useSelector((state) => state.restaurants);
+  const restaurants = useSelector((state) => state.restaurants.data);
   const { origin, destination, center } = useSelector(
     (state) => state.selectedLocation
   );
   const [directions, setDirections] = useState();
 
   useEffect(() => {
-    const getRestaurantData = async () => {
-      const restaurants = await getRestaurants();
-      console.log(restaurants);
-      dispatch(setRestaurants(restaurants));
-    };
-    getRestaurantData();
+    dispatch(getRestaurantsByFilter());
   }, []);
 
   useEffect(() => {
