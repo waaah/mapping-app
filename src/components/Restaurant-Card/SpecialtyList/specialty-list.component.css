@@ -1,0 +1,9 @@
+.flex-container {
+  display: flex;
+}
+.main-header {
+  width: 90%;
+}
+.edit-link {
+  align-self: center;
+}

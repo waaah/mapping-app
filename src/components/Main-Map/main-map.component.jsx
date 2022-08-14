@@ -9,7 +9,7 @@ import "./main-map.styles.css";
 export const MainMap = () => {
   const dispatch = useDispatch();
   const restaurants = useSelector((state) => state.restaurants);
-  const { origin, destination } = useSelector(
+  const { origin, destination, center } = useSelector(
     (state) => state.selectedLocation
   );
   const [directions, setDirections] = useState();
@@ -17,6 +17,7 @@ export const MainMap = () => {
   useEffect(() => {
     const getRestaurantData = async () => {
       const restaurants = await getRestaurants();
+      console.log(restaurants);
       dispatch(setRestaurants(restaurants));
     };
     getRestaurantData();
@@ -42,8 +43,7 @@ export const MainMap = () => {
   return (
     <Map
       config={{
-        lat: 10.336536,
-        lng: 123.883072,
+        center,
         markerData: restaurants,
         directions,
       }}

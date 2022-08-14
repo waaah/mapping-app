@@ -1,0 +1,21 @@
+.detached-card {
+  position: absolute;
+  left: 380px;
+  top: 10vh;
+  z-index: 1000;
+  max-height: 60vh;
+  height: 100%;
+  width: 35vw;
+  overflow: auto !important;
+}
+.get-directions-link {
+  font-weight: bold;
+  cursor: pointer;
+}
+.clear-icon {
+  color: #111111;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  cursor: pointer;
+}

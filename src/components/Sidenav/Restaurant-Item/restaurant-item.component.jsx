@@ -1,7 +1,8 @@
+/* global google */
 import * as React from "react";
 import Divider from "@mui/material/Divider";
 import StarRatings from "react-star-ratings";
-import { setLocationState } from "../../../store/selected-location/selected-location.slices";
+import { selectRestaurant } from "../../../store/selected-location/selected-location.slices";
 import { useDispatch } from "react-redux/es/exports";
 import { getLocation } from "../../../services/location";
 import "./restaurant-item.component.css";
@@ -27,9 +28,9 @@ export const RestaurantItem = (props) => {
   );
 
   const onClickLocationCard = async () => {
-    const origin = await getLocation();
     const destination = restaurant.geometry.location;
-    dispatch(setLocationState({ origin, destination, restaurant }));
+    const { lat, lng } = destination;
+    dispatch(selectRestaurant({ restaurant, center: { lat, lng } }));
   };
 
   return (
