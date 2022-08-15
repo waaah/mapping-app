@@ -1,8 +1,10 @@
 import * as React from "react";
 import Divider from "@mui/material/Divider";
 import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import Button from "@mui/material/Button";
 import CardContent from "@mui/material/CardContent";
-import CardMedia from "@mui/material/CardMedia";
+import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
 import { useDispatch, useSelector } from "react-redux";
 import "./restaurant-card.component.css";
@@ -13,7 +15,6 @@ import {
   setOriginAndDestination,
 } from "../../store/selected-location/selected-location.slices";
 import { Link } from "@mui/material";
-import { getLocationImage } from "../../services/places";
 import { getRestaurantData } from "../../services/restaurant";
 import { SpecialtyList } from "./SpecialtyList/specialty-list.component";
 import _ from "lodash";
@@ -23,30 +24,28 @@ import ClearIcon from "@mui/icons-material/Clear";
 export const RestaurantCard = () => {
   const dispatch = useDispatch();
   const { restaurant } = useSelector((state) => state.selectedLocation);
-  const [additionalInfo, setAdditionalInfo] = React.useState({
-    specialties: [],
-    category: null,
-  });
+  const [additionalInfo, setAdditionalInfo] = React.useState(null);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
     const getAdditionalInfo = async () => {
       if (restaurant) {
+        setIsLoading(true);
         const info = await getRestaurantData(restaurant.place_id);
         localStorage.setItem("category", info.category);
         localStorage.setItem("specialties", JSON.stringify(info.specialties));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         setAdditionalInfo(info);
+        setIsLoading(false);
       }
     };
     getAdditionalInfo();
   }, [restaurant]);
 
-  if (!restaurant) return null;
-
-  const photoReference = _.get(restaurant, "photos[0].photo_reference");
-
   const getDirections = async () => {
     const origin = await getLocation();
-    const destination = restaurant.geometry.location;
+    const { lat, lng } = restaurant;
+    const destination = { lat, lng };
     dispatch(setOriginAndDestination({ origin, destination }));
   };
 
@@ -68,20 +67,44 @@ export const RestaurantCard = () => {
     dispatch(closeRestaurant());
   };
 
+  if (!restaurant) return null;
+
+  // const photoReference = _.get(restaurant, "photos[0].photo_reference");
+
   return (
-    <Card className="detached-card" sx={{ maxWidth: 400 }}>
+    <Card
+      className="detached-card"
+      sx={{ maxWidth: 400, width: "100%", display: "flex" }}
+    >
       <div className="clear-icon" onClick={onCloseCard}>
         <ClearIcon />
       </div>
-      {/* {photoReference && (
-        <CardMedia
-          component="img"
-          alt="restaurant-banner"
-          height="200"
-          image={getLocationImage(photoReference)}
+      {isLoading ? (
+        <CircularProgress sx={{ margin: "auto" }} />
+      ) : (
+        <RestaurantCardContent
+          restaurant={restaurant}
+          additionalInfo={additionalInfo}
+          onSetCategory={onSetCategory}
+          onSetSpecialties={onSetSpecialties}
+          getDirections={getDirections}
         />
-      )} */}
-      <CardContent>
+      )}
+    </Card>
+  );
+};
+
+const RestaurantCardContent = (props) => {
+  const {
+    restaurant,
+    additionalInfo,
+    onSetCategory,
+    onSetSpecialties,
+    getDirections,
+  } = props;
+  return (
+    <>
+      <CardContent sx={{ m: 1 }}>
         <Typography gutterBottom variant="h5" component="div">
           {restaurant.name}
         </Typography>
@@ -98,23 +121,15 @@ export const RestaurantCard = () => {
         </Typography>
         <Typography gutterBottom variant="body2" color="text.secondary">
           <Typography gutterBottom variant="span">
-            Address:
-          </Typography>
-          <Typography gutterBottom variant="p">
-            {restaurant.formatted_address}
+            Address: {restaurant.formatted_address}
           </Typography>
         </Typography>
-        <Typography gutterBottom variant="body2" color="text.secondary">
+        <Typography sx={{ mb: 2 }} variant="body2" color="text.secondary">
           <Category
             onSetCategory={onSetCategory}
             category={additionalInfo.category}
             placeId={restaurant.place_id}
           />
-        </Typography>
-        <Typography gutterBottom variant="body2" color="text.secondary">
-          <Link className="get-directions-link" onClick={getDirections}>
-            Get Directions
-          </Link>
         </Typography>
         <Divider />
         <Typography variant="body2" color="text.secondary">
@@ -126,7 +141,10 @@ export const RestaurantCard = () => {
             />
           )}
         </Typography>
+        <Button variant="contained" onClick={getDirections}>
+          Get Directions
+        </Button>
       </CardContent>
-    </Card>
+    </>
   );
 };

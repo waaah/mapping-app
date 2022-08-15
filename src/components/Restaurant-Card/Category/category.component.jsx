@@ -24,17 +24,6 @@ export const Category = (props) => {
 
   return (
     <>
-      <div className="flex-container">
-        <span className="main-header">Restaurant Type: </span>
-        {!isEdit && (
-          <Link
-            className="get-directions-link edit-link"
-            onClick={onSetEditToTrue}
-          >
-            Edit
-          </Link>
-        )}
-      </div>
       {isEdit ? (
         <CategoryForm
           onCancelEdit={onCancelEdit}
@@ -44,7 +33,15 @@ export const Category = (props) => {
           onCloseEditing={onCloseEditing}
         />
       ) : (
-        <span>{category}</span>
+        <div className="flex-container">
+          <span className="category-info-container">Category: {category}</span>
+          <Link
+            className="get-directions-link edit-link"
+            onClick={onSetEditToTrue}
+          >
+            Edit
+          </Link>
+        </div>
       )}
     </>
   );

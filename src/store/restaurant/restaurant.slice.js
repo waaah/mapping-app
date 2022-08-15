@@ -4,8 +4,8 @@ import { getRestaurants } from "../../services/places";
 // First, create the thunk
 const getRestaurantsByFilter = createAsyncThunk(
   "maps/getRestaurantsByFilter",
-  async (filter) => {
-    const response = await getRestaurants();
+  async (filters) => {
+    const response = await getRestaurants(filters);
     return response;
   }
 );
@@ -25,6 +25,9 @@ const restaurantsSlice = createSlice({
     builder
       .addCase(getRestaurantsByFilter.pending, (state, action) => {
         state.isLoading = true;
+      })
+      .addCase(getRestaurantsByFilter.rejected, (state, action) => {
+        state.data = [];
       })
       .addCase(getRestaurantsByFilter.fulfilled, (state, action) => {
         // update state

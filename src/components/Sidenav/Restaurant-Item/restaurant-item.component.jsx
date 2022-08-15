@@ -28,8 +28,7 @@ export const RestaurantItem = (props) => {
   );
 
   const onClickLocationCard = async () => {
-    const destination = restaurant.geometry.location;
-    const { lat, lng } = destination;
+    const { lat, lng } = restaurant;
     dispatch(selectRestaurant({ restaurant, center: { lat, lng } }));
   };
 

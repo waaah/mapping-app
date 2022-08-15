@@ -1,14 +1,16 @@
 const axios = require("axios");
+const qs = require("qs");
 const corsAnywhere = "https://corsanywhere.herokuapp.com/";
-export const getRestaurants = async () => {
+export const getRestaurants = async (filters = {}) => {
   try {
     const { data } = await axios({
       method: "get",
-      url: "http://localhost:4500/places",
+      url: "http://localhost:4500/places?" + qs.stringify(filters),
     });
     return data;
   } catch (error) {
     console.log(error);
+    throw error;
   }
 };
 

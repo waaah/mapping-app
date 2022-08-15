@@ -1,10 +1,11 @@
 import * as React from "react";
 import { FormControl } from "@mui/material";
 import { InputLabel } from "@mui/material";
-import { Input } from "@mui/material";
+import { Select, MenuItem } from "@mui/material";
 import { Button } from "@mui/material";
 import { Grid } from "@mui/material";
 import { setCategory } from "../../../services/restaurant";
+import { categoriesData } from "../../../data/category";
 
 export const CategoryForm = (props) => {
   const { category, onCancelEdit, onSetCategory, placeId, onCloseEditing } =
@@ -26,12 +27,18 @@ export const CategoryForm = (props) => {
             <InputLabel fullWidth htmlFor="my-input">
               Category
             </InputLabel>
-            <Input
-              value={category}
-              onChange={(event) => onSetCategory(event.target.value)}
+            <Select
               fullWidth
-              id="my-input"
-            />
+              labelId={`${category}-label`}
+              id={category}
+              value={category}
+              label={category}
+              onChange={(event) => onSetCategory(event.target.value)}
+            >
+              {categoriesData.map((currentCategory) => (
+                <MenuItem value={currentCategory}>{currentCategory}</MenuItem>
+              ))}
+            </Select>
           </Grid>
         </Grid>
       </FormControl>

@@ -4,7 +4,6 @@ const initialState = {
   destination: null,
   origin: null,
   restaurant: null,
-  center: { lat: 10.336536, lng: 123.883072 },
 };
 
 const selectedLocationSlice = createSlice({
@@ -12,10 +11,8 @@ const selectedLocationSlice = createSlice({
   initialState,
   reducers: {
     selectRestaurant(state, action) {
-      const { restaurant, center } = action.payload;
+      const { restaurant } = action.payload;
       state.restaurant = restaurant;
-      state.center = center;
-
       return state;
     },
 

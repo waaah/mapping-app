@@ -14,7 +14,7 @@ export const MainMap = () => {
   const [directions, setDirections] = useState();
 
   useEffect(() => {
-    dispatch(getRestaurantsByFilter());
+    dispatch(getRestaurantsByFilter({ location: `10.336536,123.883072` }));
   }, []);
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export const MainMap = () => {
   return (
     <Map
       config={{
-        center,
+        center: { lat: 10.336536, lng: 123.883072 },
         markerData: restaurants,
         directions,
       }}

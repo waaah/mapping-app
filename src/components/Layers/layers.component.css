@@ -1,0 +1,20 @@
+.layers--container {
+  position: absolute;
+  top: 20px;
+  right: 1vw;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+.layers--button {
+  align-self: flex-end;
+  margin-bottom: 1em !important;
+}
+.layers--card {
+  background-color: #fff;
+  overflow: auto !important;
+  height: 50vh;
+}
+.layers--card-hide {
+  display: none;
+}

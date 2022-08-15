@@ -3,7 +3,13 @@
 }
 .main-header {
   width: 90%;
+  margin-top: 1rem;
+  margin-bottom: 0.2rem;
 }
 .edit-link {
   align-self: center;
+}
+
+.category-info-container {
+  width: 90%;
 }
