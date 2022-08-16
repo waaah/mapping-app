@@ -5,7 +5,7 @@ export const getRestaurants = async (filters = {}) => {
   try {
     const { data } = await axios({
       method: "get",
-      url: `${API_URL}/places` + qs.stringify(filters),
+      url: `${API_URL}/places?` + qs.stringify(filters),
     });
     return data;
   } catch (error) {
