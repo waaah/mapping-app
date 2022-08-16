@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 
 function App() {
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyD-eQAdA2DAAPRVDQKOCKT1KpgeKtJnDVM",
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
   });
   const { isLoading } = useSelector((state) => state.restaurants);
 

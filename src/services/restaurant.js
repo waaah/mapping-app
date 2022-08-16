@@ -1,5 +1,5 @@
 import axios from "axios";
-const endpoint = "http://localhost:4500";
+const endpoint = process.env.REACT_APP_NAVAGIS_TEST_URL;
 
 export const getRestaurantData = async (placeId) => {
   try {
