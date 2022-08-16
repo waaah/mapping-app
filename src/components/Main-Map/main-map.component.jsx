@@ -37,7 +37,6 @@ export const MainMap = () => {
           setDirections(null);
         }
       } catch (error) {
-        console.log(error);
         alert("No directions were found");
         setDirections(null);
         dispatch(setDirectionData(null));
