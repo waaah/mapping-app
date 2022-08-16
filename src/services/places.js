@@ -9,7 +9,18 @@ export const getRestaurants = async (filters = {}) => {
     });
     return data;
   } catch (error) {
-    console.log(error);
+    throw error;
+  }
+};
+
+export const getRestaurantsOnDrag = async (filters = {}) => {
+  try {
+    const { data } = await axios({
+      method: "get",
+      url: "http://localhost:4500/places/ondrag?" + qs.stringify(filters),
+    });
+    return data;
+  } catch (error) {
     throw error;
   }
 };

@@ -27,7 +27,6 @@ export const setSpecialties = async (placeId, data) => {
   try {
     return await axios.post(`${endpoint}/places/${placeId}/specialties`, data);
   } catch (error) {
-    console.log(error, "setspec");
     throw error;
   }
 };

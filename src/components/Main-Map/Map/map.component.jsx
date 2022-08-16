@@ -2,7 +2,10 @@
 import { GoogleMap, Marker, DirectionsRenderer } from "@react-google-maps/api";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import { getRestaurantsByFilter } from "../../../store/restaurant/restaurant.slice";
+import {
+  getRestaurantsByFilter,
+  getRestaurantsOnDragHandler,
+} from "../../../store/restaurant/restaurant.slice";
 import { selectRestaurant } from "../../../store/selected-location/selected-location.slices";
 
 export const Map = (props) => {
@@ -37,19 +40,19 @@ export const Map = (props) => {
     const hasEventListener = window.hasMapOnDrag;
     if (!hasEventListener) {
       window.hasMapOnDrag = true;
-      // map.addListener("dragend", () => {
-      //   const currentCenter = map.getCenter();
-      //   const centerCoordinates = {
-      //     lat: currentCenter.lat(),
-      //     lng: currentCenter.lng(),
-      //   };
-      //   setCenter(centerCoordinates);
-      //   dispatch(
-      //     getRestaurantsByFilter({
-      //       location: `${centerCoordinates.lat},${centerCoordinates.lng}`,
-      //     })
-      //   );
-      // });
+      map.addListener("dragend", () => {
+        const currentCenter = map.getCenter();
+        const centerCoordinates = {
+          lat: currentCenter.lat(),
+          lng: currentCenter.lng(),
+        };
+        setCenter(centerCoordinates);
+        // dispatch(
+        //   getRestaurantsOnDragHandler({
+        //     location: `${centerCoordinates.lat},${centerCoordinates.lng}`,
+        //   })
+        // );
+      });
     }
   }
   const defaultMapOptions = {

@@ -1,0 +1,6 @@
+.directions--info {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 0.7rem;
+}

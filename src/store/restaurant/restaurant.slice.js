@@ -1,11 +1,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getRestaurants } from "../../services/places";
+import { getRestaurants, getRestaurantsOnDrag } from "../../services/places";
 
-// First, create the thunk
-const getRestaurantsByFilter = createAsyncThunk(
+export const getRestaurantsByFilter = createAsyncThunk(
   "maps/getRestaurantsByFilter",
   async (filters) => {
     const response = await getRestaurants(filters);
+    return response;
+  }
+);
+export const getRestaurantsOnDragHandler = createAsyncThunk(
+  "maps/getRestaurantsOnDrag",
+  async (filters) => {
+    const response = await getRestaurantsOnDrag(filters);
     return response;
   }
 );
@@ -38,5 +44,4 @@ const restaurantsSlice = createSlice({
 });
 
 export const { getRestaurantInfo, setRestaurants } = restaurantsSlice.actions;
-export { getRestaurantsByFilter };
 export default restaurantsSlice;

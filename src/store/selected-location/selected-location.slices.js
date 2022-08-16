@@ -4,6 +4,8 @@ const initialState = {
   destination: null,
   origin: null,
   restaurant: null,
+  mode: null,
+  directionData: null,
 };
 
 const selectedLocationSlice = createSlice({
@@ -13,13 +15,23 @@ const selectedLocationSlice = createSlice({
     selectRestaurant(state, action) {
       const { restaurant } = action.payload;
       state.restaurant = restaurant;
+      state.directionData = initialState.directionData;
       return state;
     },
-
-    setOriginAndDestination(state, action) {
-      const { origin, destination } = action.payload;
+    getDirections(state, action) {
+      const { origin, destination, mode } = action.payload;
       state.origin = origin;
       state.destination = destination;
+      state.mode = mode;
+      return state;
+    },
+    setDirectionData(state, action) {
+      if (!action.payload) {
+        state.directionData = null;
+      } else {
+        const { estimatedTime, estimatedDistance } = action.payload;
+        state.directionData = { estimatedTime, estimatedDistance };
+      }
       return state;
     },
     resetState(state) {
@@ -27,18 +39,22 @@ const selectedLocationSlice = createSlice({
       return state;
     },
     closeRestaurant(state) {
-      state.restaurant = null;
+      state = initialState;
+      return state;
+    },
+    resetDirectionState(state) {
       state.origin = null;
       state.destination = null;
-      return state;
     },
   },
 });
 
 export const {
-  setOriginAndDestination,
+  setDirections,
   resetState,
   selectRestaurant,
   closeRestaurant,
+  getDirections,
+  setDirectionData,
 } = selectedLocationSlice.actions;
 export default selectedLocationSlice;

@@ -3,9 +3,10 @@ import { getLocationByAddress } from "./places";
 export const getLocation = async () => {
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(
-      function (position) {
+      (position) => {
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
+
         resolve({ lat, lng });
       },
       async (error) => {
@@ -13,6 +14,9 @@ export const getLocation = async () => {
         const address = prompt("Enter your address:");
         alert(address);
         return await getCoordinatesByAddress(address, resolve, reject);
+      },
+      {
+        enableHighAccuracy: true,
       }
     );
   });

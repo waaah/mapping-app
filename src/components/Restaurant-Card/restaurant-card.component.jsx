@@ -1,25 +1,19 @@
 import * as React from "react";
 import Divider from "@mui/material/Divider";
 import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
-import Button from "@mui/material/Button";
 import CardContent from "@mui/material/CardContent";
 import CircularProgress from "@mui/material/CircularProgress";
 import Typography from "@mui/material/Typography";
 import { useDispatch, useSelector } from "react-redux";
 import "./restaurant-card.component.css";
 import StarRatings from "react-star-ratings";
-import { getLocation } from "../../services/location";
-import {
-  closeRestaurant,
-  setOriginAndDestination,
-} from "../../store/selected-location/selected-location.slices";
-import { Link } from "@mui/material";
+import { closeRestaurant } from "../../store/selected-location/selected-location.slices";
 import { getRestaurantData } from "../../services/restaurant";
 import { SpecialtyList } from "./SpecialtyList/specialty-list.component";
 import _ from "lodash";
 import { Category } from "./Category/category.component";
 import ClearIcon from "@mui/icons-material/Clear";
+import { DirectionsInfo } from "../Directions-Info/directions-info.component";
 
 export const RestaurantCard = () => {
   const dispatch = useDispatch();
@@ -42,25 +36,22 @@ export const RestaurantCard = () => {
     getAdditionalInfo();
   }, [restaurant]);
 
-  const getDirections = async () => {
-    const origin = await getLocation();
-    const { lat, lng } = restaurant;
-    const destination = { lat, lng };
-    dispatch(setOriginAndDestination({ origin, destination }));
-  };
-
   const onSetSpecialties = (specialties) => {
-    setAdditionalInfo((state, prevState) => ({
-      ...prevState,
-      specialties,
-    }));
+    setAdditionalInfo((prevState) => {
+      return {
+        ...prevState,
+        specialties,
+      };
+    });
   };
 
   const onSetCategory = (category) => {
-    setAdditionalInfo((state, prevState) => ({
-      ...prevState,
-      category,
-    }));
+    setAdditionalInfo((prevState) => {
+      return {
+        ...prevState,
+        category,
+      };
+    });
   };
 
   const onCloseCard = () => {
@@ -87,7 +78,6 @@ export const RestaurantCard = () => {
           additionalInfo={additionalInfo}
           onSetCategory={onSetCategory}
           onSetSpecialties={onSetSpecialties}
-          getDirections={getDirections}
         />
       )}
     </Card>
@@ -95,13 +85,7 @@ export const RestaurantCard = () => {
 };
 
 const RestaurantCardContent = (props) => {
-  const {
-    restaurant,
-    additionalInfo,
-    onSetCategory,
-    onSetSpecialties,
-    getDirections,
-  } = props;
+  const { restaurant, additionalInfo, onSetCategory, onSetSpecialties } = props;
   return (
     <>
       <CardContent sx={{ m: 1 }}>
@@ -141,9 +125,9 @@ const RestaurantCardContent = (props) => {
             />
           )}
         </Typography>
-        <Button variant="contained" onClick={getDirections}>
-          Get Directions
-        </Button>
+        <Typography variant="body2" color="text.secondary">
+          <DirectionsInfo restaurant={restaurant} />
+        </Typography>
       </CardContent>
     </>
   );
