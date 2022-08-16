@@ -16,6 +16,7 @@ const selectedLocationSlice = createSlice({
       const { restaurant } = action.payload;
       state.restaurant = restaurant;
       state.directionData = initialState.directionData;
+      state.mode = null;
       return state;
     },
     getDirections(state, action) {

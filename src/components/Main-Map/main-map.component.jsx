@@ -22,18 +22,22 @@ export const MainMap = () => {
     // if there are any changes in the origin and destination
     const getDirections = async () => {
       try {
-        if (!origin && !destination && !mode) return setDirections(null);
-        const directionsService = new window.google.maps.DirectionsService();
-        const directions = await directionsService.route({
-          origin,
-          destination,
-          travelMode: mode,
-        });
-        setDirections(directions);
-        const estimatedTime = directions.routes[0].legs[0].duration.text;
-        const estimatedDistance = directions.routes[0].legs[0].distance.text;
-        dispatch(setDirectionData({ estimatedDistance, estimatedTime }));
+        if (origin && destination && mode) {
+          const directionsService = new window.google.maps.DirectionsService();
+          const directions = await directionsService.route({
+            origin,
+            destination,
+            travelMode: mode,
+          });
+          setDirections(directions);
+          const estimatedTime = directions.routes[0].legs[0].duration.text;
+          const estimatedDistance = directions.routes[0].legs[0].distance.text;
+          dispatch(setDirectionData({ estimatedDistance, estimatedTime }));
+        } else {
+          setDirections(null);
+        }
       } catch (error) {
+        console.log(error);
         alert("No directions were found");
         setDirections(null);
         dispatch(setDirectionData(null));

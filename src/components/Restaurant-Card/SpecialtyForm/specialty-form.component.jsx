@@ -38,9 +38,9 @@ export const SpecialtyForm = (props) => {
     onSetSpecialties(specialties);
   };
 
-  const onRemoveSpecialtyItem = (index) => {
+  const onRemoveSpecialtyItem = (item) => {
     if (specialties.length === 1) return;
-    const newItems = specialties.splice(index);
+    const newItems = specialties.filter((specialty) => specialty !== item);
     onSetSpecialties(newItems);
   };
 
@@ -64,7 +64,7 @@ export const SpecialtyForm = (props) => {
             </Grid>
             <Grid item xs={2}>
               <Button
-                onClick={() => onRemoveSpecialtyItem(index)}
+                onClick={() => onRemoveSpecialtyItem(item)}
                 fullWidth
                 variant="contained"
               >
