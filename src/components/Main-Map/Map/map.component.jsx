@@ -1,21 +1,38 @@
 /* eslint-disable no-undef */
-import { GoogleMap, Marker, DirectionsRenderer } from "@react-google-maps/api";
-import { useState } from "react";
+import {
+  GoogleMap,
+  Marker,
+  DirectionsRenderer,
+  Rectangle,
+} from "@react-google-maps/api";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import {
-  getRestaurantsByFilter,
-  getRestaurantsOnDragHandler,
-} from "../../../store/restaurant/restaurant.slice";
+  createRectangle,
+  modifyBounds,
+  setMouseDownState,
+} from "../../../store/map/map.slice";
 import { selectRestaurant } from "../../../store/selected-location/selected-location.slices";
+import { selectRectangle, setCenter } from "../../../store/map/map.slice";
+import { addFilter } from "../../../store/restaurant/restaurant.slice";
 
 export const Map = (props) => {
   const dispatch = useDispatch();
   const [map, setMap] = useState();
-  const { markerData, directions } = props.config;
-  const [center, setCenter] = useState({ lat: 10.336536, lng: 123.883072 });
+  const { markerData, directions, rectangleData, isAddShape, center } =
+    props.config;
+  const boundsData = JSON.stringify(rectangleData.map((rect) => rect.bounds));
+  useEffect(() => {
+    dispatch(
+      addFilter({
+        coordinates: boundsData === "[]" ? undefined : boundsData,
+      })
+    );
+  }, [boundsData]);
 
   const onSelectMarker = (restaurant) => {
     const { lat, lng } = restaurant;
+    dispatch(setCenter({ lat, lng }));
     dispatch(selectRestaurant({ restaurant, center: { lat, lng } }));
   };
 
@@ -34,7 +51,67 @@ export const Map = (props) => {
     <DirectionsRenderer directions={directions} />
   );
 
-  const mapCenter = new google.maps.LatLng(center.lat, center.lng);
+  const rectangles = rectangleData.map((data, i) => {
+    const { bounds, key, editable, draggable, isMouseDown } = data;
+    return (
+      <Rectangle
+        bounds={bounds}
+        key={key}
+        editable={editable}
+        draggable={draggable}
+        onClick={() => {
+          dispatch(selectRectangle({ selectedKey: key }));
+        }}
+        onMouseDown={() =>
+          dispatch(setMouseDownState({ key, isMouseDown: true }))
+        }
+        onMouseUp={() =>
+          dispatch(setMouseDownState({ key, isMouseDown: false }))
+        }
+        onBoundsChanged={function () {
+          if (!isMouseDown) {
+            const newBounds = this.getBounds().toJSON();
+            if (
+              newBounds.east !== bounds.east ||
+              newBounds.north !== bounds.north ||
+              newBounds.south !== bounds.south ||
+              newBounds.west !== bounds.west
+            ) {
+              dispatch(modifyBounds({ bounds: newBounds, key }));
+            }
+          }
+        }}
+        onDragEnd={function () {
+          const newBounds = this.getBounds().toJSON();
+          if (
+            newBounds.east !== bounds.east ||
+            newBounds.north !== bounds.north ||
+            newBounds.south !== bounds.south ||
+            newBounds.west !== bounds.west
+          )
+            dispatch(modifyBounds({ bounds: newBounds, key }));
+        }}
+      />
+    );
+  });
+
+  const onHandleMapClick = (event) => {
+    const lat = event.latLng.lat();
+    const lng = event.latLng.lng();
+
+    const rectangleConfig = {
+      bounds: {
+        north: lat + 0.01,
+        south: lat - 0.01,
+        east: lng + 0.01,
+        west: lng - 0.01,
+      },
+      center: { lat, lng },
+      editable: false,
+      draggable: false,
+    };
+    dispatch(createRectangle(rectangleConfig));
+  };
 
   if (map) {
     const hasEventListener = window.hasMapOnDrag;
@@ -46,29 +123,33 @@ export const Map = (props) => {
           lat: currentCenter.lat(),
           lng: currentCenter.lng(),
         };
-        setCenter(centerCoordinates);
+        dispatch(setCenter(centerCoordinates));
         // dispatch(
         //   getRestaurantsOnDragHandler({
         //     location: `${centerCoordinates.lat},${centerCoordinates.lng}`,
         //   })
         // );
       });
+
+      map.addListener("click", onHandleMapClick);
     }
   }
   const defaultMapOptions = {
     fullscreenControl: false,
+    draggableCursor: isAddShape ? "crosshair" : "grab",
   };
 
   return (
     <GoogleMap
       options={defaultMapOptions}
       zoom={15}
-      center={mapCenter}
-      mapContainerClassName="map-container"
+      center={center}
+      mapContainerClassName={`map-container`}
       onLoad={(map) => setMap(map)}
     >
       {markers.length > 0 && markers}
       {directionsData}
+      {rectangles.length > 0 && rectangles}
     </GoogleMap>
   );
 };

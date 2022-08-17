@@ -5,6 +5,7 @@ import StarRatings from "react-star-ratings";
 import { selectRestaurant } from "../../../store/selected-location/selected-location.slices";
 import { useDispatch } from "react-redux/es/exports";
 import { getLocation } from "../../../services/location";
+import { setCenter } from "../../../store/map/map.slice";
 import "./restaurant-item.component.css";
 
 export const RestaurantItem = (props) => {
@@ -29,6 +30,7 @@ export const RestaurantItem = (props) => {
 
   const onClickLocationCard = async () => {
     const { lat, lng } = restaurant;
+    dispatch(setCenter({ lat, lng }));
     dispatch(selectRestaurant({ restaurant, center: { lat, lng } }));
   };
 

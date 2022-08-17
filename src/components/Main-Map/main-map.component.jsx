@@ -9,14 +9,18 @@ import { setDirectionData } from "../../store/selected-location/selected-locatio
 export const MainMap = () => {
   const dispatch = useDispatch();
   const [directions, setDirections] = useState(null);
-  const restaurants = useSelector((state) => state.restaurants.data);
+  const { data: restaurants, filters } = useSelector(
+    (state) => state.restaurants
+  );
+  const { rectangles, isAddShape, center } = useSelector((state) => state.map);
   const { origin, destination, mode } = useSelector(
     (state) => state.selectedLocation
   );
 
+  // get restaurants when filters change
   useEffect(() => {
-    dispatch(getRestaurantsByFilter());
-  }, []);
+    dispatch(getRestaurantsByFilter(filters));
+  }, [JSON.stringify(filters)]);
 
   useEffect(() => {
     // if there are any changes in the origin and destination
@@ -48,9 +52,11 @@ export const MainMap = () => {
   return (
     <Map
       config={{
-        center: { lat: 10.336536, lng: 123.883072 },
+        center,
         markerData: restaurants,
         directions,
+        rectangleData: rectangles,
+        isAddShape,
       }}
     />
   );
